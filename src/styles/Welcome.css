@@ -1,0 +1,10 @@
+.welcomeContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.welcomeContainer > h3:hover {
+  cursor: pointer;
+}

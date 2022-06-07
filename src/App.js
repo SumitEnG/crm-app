@@ -1,24 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import { createTheme, Paper, Switch, ThemeProvider } from "@mui/material";
+import { useState } from "react";
+import { Suspense } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import LogIn from "./component/LogIn";
+import Welcome from "./component/Welcome";
 
 function App() {
+  const [mode, setMode] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: !mode ? "light" : "dark",
+    },
+  });
+
+  const handleDarkMode = () => {
+    setMode(!mode);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Paper className="main-container">
+          <div className="switch">
+            <Switch onChange={handleDarkMode} value={mode} />
+            {mode ? (
+              <span> switch to light mode</span>
+            ) : (
+              <span>switch to dark mode</span>
+            )}
+          </div>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Welcome />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <LogIn />
+                </Suspense>
+              }
+            />
+          </Routes>
+        </Paper>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
