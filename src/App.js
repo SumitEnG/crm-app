@@ -3,15 +3,35 @@ import { useState } from "react";
 import { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import NotFound from "./authentications/NotFound";
+import RequireAuth from "./authentications/RequireAuth";
+import Unauthorized from "./authentications/Unauthorized";
+import Admin from "./component/Admin";
+import Customer from "./component/Customer";
+import Engineer from "./component/Engineer";
 import LogIn from "./component/LogIn";
 import Welcome from "./component/Welcome";
 
 function App() {
   const [mode, setMode] = useState(false);
 
+  const ROLES = {
+    CUSTOMER: "CUSTOMER",
+    ENGINEER: "ENGINEER",
+    ADMIN: "ADMIN",
+  };
+
   const theme = createTheme({
     palette: {
       mode: !mode ? "light" : "dark",
+      background: {
+        paper: !mode ? "#ede9dd" : "#121212",
+        default: !mode ? "#77a6f2" : "#435e8a",
+        onother: !mode ? "#c7f0e0" : "#4c4d49",
+      },
+      color: {
+        another: !mode ? "#313cde" : "#03b1fc",
+      },
     },
   });
 
@@ -47,6 +67,17 @@ function App() {
                 </Suspense>
               }
             />
+            <Route path="/unauthorized" element={<Unauthorized />} />{" "}
+            <Route path="/notFound" element={<NotFound />} />
+            <Route element={<RequireAuth allowedRoles={[ROLES.CUSTOMER]} />}>
+              <Route path="/customer" element={<Customer />} />
+            </Route>
+            <Route element={<RequireAuth allowedRoles={[ROLES.ENGINEER]} />}>
+              <Route path="/engineer" element={<Engineer />} />
+            </Route>
+            <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN]} />}>
+              <Route path="/admin" element={<Admin />} />
+            </Route>
           </Routes>
         </Paper>
       </BrowserRouter>

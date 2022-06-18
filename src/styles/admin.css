@@ -1,0 +1,16 @@
+.welcome {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.cards-container {
+  margin-top: 5%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.textFieldTicketModal {
+  padding: 10px;
+}

@@ -13,12 +13,13 @@ import {
 import React from "react";
 import { useRef } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { userSigninAuth, userSignupAuth } from "../api/auth";
 import "../styles/LogIn.css";
 
 function LogIn() {
   const [show, setShow] = useState(false);
-  const [usertype, setUsertype] = useState("None");
+  const [usertype, setUsertype] = useState("NONE");
   const [
     userIdLoginRef,
     userPassLoginRef,
@@ -31,7 +32,9 @@ function LogIn() {
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [severity, setSeverity] = useState("error");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const theme = useTheme();
   const toggleSignup = () => {
     setShow(!show);
@@ -55,11 +58,19 @@ function LogIn() {
       .then((responce) => {
         console.log(responce);
         setLoading(false);
+
+        if (responce.status === 201) {
+          setShowSnackbar(true);
+          setSnackbarMsg("Sign-up successfull,Go to Sign-in page");
+          setSeverity("success");
+        }
       })
       .catch((error) => {
         console.log(error);
         setShowSnackbar(true);
-        setSnackbarMsg(error.response.data.message);
+        setSnackbarMsg(
+          error.response.data ? error.response.data.message : error.message
+        );
         setLoading(false);
       });
   };
@@ -75,11 +86,32 @@ function LogIn() {
       .then((resp) => {
         console.log(resp);
         setLoading(false);
+
+        const dataOfUser = {
+          name: resp.data.name,
+          userId: resp.data.userId,
+          email: resp.data.email,
+          userType: resp.data.userTypes,
+          accessToken: resp.data.accessToken,
+        };
+
+        if (resp.status === 200) {
+          localStorage.setItem("dataOfUser", JSON.stringify(dataOfUser));
+          if (resp.data.userTypes === "CUSTOMER") {
+            navigate("/customer");
+          } else if (resp.data.userTypes === "ENGINEER") {
+            navigate("/engineer");
+          } else if (resp.data.userTypes === "ADMIN") {
+            navigate("/admin");
+          }
+        }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.log(error);
         setShowSnackbar(true);
-        setSnackbarMsg(err.response.data.message);
+        setSnackbarMsg(
+          error.response.data ? error.response.data.message : error.message
+        );
         setLoading(false);
       });
   };
@@ -95,7 +127,7 @@ function LogIn() {
         </div>
         <div
           className="loginContainer"
-          style={{ backgroundColor: theme.palette.background.default }}
+          style={{ backgroundColor: theme.palette.background.paper }}
         >
           {show ? (
             <>
@@ -260,7 +292,7 @@ function LogIn() {
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert
-            severity="error"
+            severity={severity}
             onClose={() => {
               setShowSnackbar(false);
               setSnackbarMsg("");
