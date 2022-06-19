@@ -67,7 +67,7 @@ function App() {
                 </Suspense>
               }
             />
-            <Route path="/unauthorized" element={<Unauthorized />} />{" "}
+            <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="/notFound" element={<NotFound />} />
             <Route element={<RequireAuth allowedRoles={[ROLES.CUSTOMER]} />}>
               <Route path="/customer" element={<Customer />} />

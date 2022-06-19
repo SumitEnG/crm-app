@@ -12,9 +12,16 @@ export const fetchUserDetails = async () => {
 };
 
 export const editUserDetails = async (userId, updatedDataObj) => {
-  return await axios.put(`${BASE_URL}/crm/api/v1/users/${userId}`, {
-    headers: {
-      "x-access-token": dataOfUser.accessToken,
+  return await axios.put(
+    `${BASE_URL}/crm/api/v1/users/${userId}`,
+    updatedDataObj,
+    {
+      headers: {
+        "x-access-token": dataOfUser.accessToken,
+      },
     },
-  });
+    {
+      userId: dataOfUser.userId,
+    }
+  );
 };

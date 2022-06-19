@@ -15,14 +15,19 @@ import { editTicketDetails, fetchTicketDetails } from "../api/FetchTicket";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useTheme } from "@mui/material";
-import { fetchUserDetails } from "../api/FetchUser";
+import { editUserDetails, fetchUserDetails } from "../api/FetchUser";
 import { ExportCsv, ExportPdf } from "@material-table/exporters";
 import { useRef } from "react";
-import { unstable_renderSubtreeIntoContainer } from "react-dom";
+import { useDispatch } from "react-redux";
+import {
+  fetchUsersThunk,
+  updateUsersThunk,
+} from "../redux-setup/UserDataSlice";
+import { useSelector } from "react-redux";
 
 function Admin() {
   const [ticketDetails, setTicketDetails] = useState();
-  const [userDetails, setUserDetails] = useState();
+  // const [userDetails, setUserDetails] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [ticketDataToBeShownInModal, setTicketDataToBeShownInModal] = useState(
     {}
@@ -36,7 +41,20 @@ function Admin() {
     updateStatusRef,
   ] = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const [newUpdatedTicket, setNewUpdatedTicket] = useState();
+
+  const [userDetailsToBeInModal, setUserDetailsToBeInModal] = useState({});
+  const [openUserModal, setOpenUserModal] = useState(false);
+  const [
+    updateNameRef,
+    updateMailRef,
+    updateUserIdRef,
+    updateUserStatusRef,
+    updateUserTypesRef,
+  ] = [useRef(), useRef(), useRef(), useRef(), useRef()];
+  const [newUpdatedUser, setNewUpdatedUser] = useState();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const usersData = useSelector((state) => state.UserSlice);
   const t = useTheme();
 
   const style = {
@@ -59,10 +77,14 @@ function Admin() {
     setOpenModal(false);
   };
 
+  const handleCloseUserModal = () => {
+    setOpenUserModal(false);
+  };
+
   useEffect(() => {
     (async () => {
+      dispatch(fetchUsersThunk());
       FetchTicket();
-      FetchUsers();
     })();
   }, []);
 
@@ -129,15 +151,62 @@ function Admin() {
       });
   };
 
-  const FetchUsers = () => {
-    fetchUserDetails()
-      .then((responce) => {
-        if (responce.status == 200) {
-          console.log(responce);
-          setUserDetails(responce.data);
-        }
-      })
-      .catch((err) => console.log(err));
+  // const FetchUsers = () => {
+  //   fetchUserDetails()
+  //     .then((responce) => {
+  //       if (responce.status == 200) {
+  //         console.log(responce);
+  //         setUserDetails(responce.data);
+  //       }
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
+
+  const editUsers = (dataSelectedOfUserRow) => {
+    const users = {
+      userId: dataSelectedOfUserRow.userId,
+      name: dataSelectedOfUserRow.name,
+      userTypes: dataSelectedOfUserRow.userTypes,
+      userStatus: dataSelectedOfUserRow.userStatus,
+      email: dataSelectedOfUserRow.email,
+    };
+    setUserDetailsToBeInModal(users);
+    setOpenUserModal(true);
+  };
+
+  const editUsersInModal = () => {
+    userDetailsToBeInModal.userId = updateUserIdRef.current.value;
+    userDetailsToBeInModal.name = updateNameRef.current.value;
+    userDetailsToBeInModal.email = updateMailRef.current.value;
+    userDetailsToBeInModal.userStatus = updateUserStatusRef.current.value;
+    userDetailsToBeInModal.userTypes = updateUserTypesRef.current.value;
+
+    const newUser = {
+      userId: updateUserIdRef.current.value,
+      userName: updateNameRef.current.value,
+      email: updateMailRef.current.value,
+      userStatus: updateUserStatusRef.current.value,
+      userType: updateUserTypesRef.current.value,
+    };
+    setNewUpdatedUser(newUser);
+  };
+
+  const updateUserChanges = () => {
+    // console.log(newUpdatedUser);
+    // setLoading(true);
+    // editUserDetails(userDetailsToBeInModal.userId, newUpdatedUser)
+    //   .then((responce) => {
+    //     console.log("update successfully", responce);
+    //     setOpenUserModal(false);
+    //     window.location.reload();
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     alert("error");
+    //     setLoading(false);
+    //   });
+    dispatch(updateUsersThunk(newUpdatedUser));
   };
 
   return (
@@ -227,6 +296,9 @@ function Admin() {
         </Box>
         <Box sx={{ padding: "2% 5%" }}>
           <MaterialTable
+            onRowClick={(e, data) => {
+              editUsers(data);
+            }}
             style={{
               color: t.palette.text.primary,
               backgroundColor: t.palette.background.onother,
@@ -275,7 +347,7 @@ function Admin() {
                 field: "userTypes",
               },
             ]}
-            data={userDetails}
+            data={usersData.data}
             title="USER RECORDS"
           />
         </Box>
@@ -366,6 +438,77 @@ function Admin() {
               onClick={updateChanges}
             >
               {loading ? <CircularProgress size={25} /> : "Submit"}
+            </Button>
+          </Box>
+        </Modal>
+
+        <Modal
+          open={openUserModal}
+          onClose={handleCloseUserModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography
+              variant="h4"
+              color="primary"
+              sx={{ color: t.palette.color.another }}
+            >
+              Update Users
+            </Typography>
+            <Box sx={{ color: t.palette.text.primary }}>User Id</Box>
+            <Box
+              sx={{
+                color: t.palette.color.another,
+                fontWeight: "bold",
+                fontSize: "larger",
+              }}
+            >
+              {userDetailsToBeInModal.userId}
+            </Box>
+            <TextField
+              id="standard-multiline-flexible"
+              label="Name"
+              multiline
+              variant="standard"
+              value={userDetailsToBeInModal.name}
+              inputRef={updateNameRef}
+              onChange={editUsersInModal}
+            />
+            <TextField
+              id="standard-multiline-flexible"
+              label="E-mail"
+              multiline
+              variant="standard"
+              value={userDetailsToBeInModal.email}
+              inputRef={updateMailRef}
+              onChange={editUsersInModal}
+              disabled
+            />
+            <TextField
+              id="standard-multiline-flexible"
+              label="User Status"
+              multiline
+              variant="standard"
+              value={userDetailsToBeInModal.userStatus}
+              inputRef={updateUserStatusRef}
+              onChange={editUsersInModal}
+            />
+            <TextField
+              id="standard-multiline-flexible"
+              label="User Types"
+              multiline
+              variant="standard"
+              value={userDetailsToBeInModal.userTypes}
+              inputRef={updateUserTypesRef}
+              onChange={editUsersInModal}
+            />
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={updateUserChanges}
+            >
+              {usersData.loading ? <CircularProgress size={25} /> : "Submit"}
             </Button>
           </Box>
         </Modal>
