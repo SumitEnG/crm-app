@@ -10,13 +10,11 @@ import React from "react";
 import Sidebar from "../tools/admin/Sidebar";
 import "../styles/admin.css";
 import Cards from "../tools/admin/cards";
-import MaterialTable from "@material-table/core";
 import { editTicketDetails, fetchTicketDetails } from "../api/FetchTicket";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useTheme } from "@mui/material";
 import { editUserDetails, fetchUserDetails } from "../api/FetchUser";
-import { ExportCsv, ExportPdf } from "@material-table/exporters";
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -229,7 +227,7 @@ function Admin() {
           />
           <Cards cardData={{ color: "error", title: "Blocked", number: "6" }} />
         </Box>
-        <Box sx={{ padding: "2% 5%" }}>
+        {/* <Box sx={{ padding: "2% 5%" }}>
           <MaterialTable
             onRowClick={(e, data) => {
               editTickets(data);
@@ -350,7 +348,7 @@ function Admin() {
             data={userDetails}
             title="USER RECORDS"
           />
-        </Box>
+        </Box> */}
 
         <Modal
           open={openModal}
