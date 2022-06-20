@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 
 function Admin() {
   const [ticketDetails, setTicketDetails] = useState();
-  // const [userDetails, setUserDetails] = useState();
+  const [userDetails, setUserDetails] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [ticketDataToBeShownInModal, setTicketDataToBeShownInModal] = useState(
     {}
@@ -53,8 +53,8 @@ function Admin() {
   ] = [useRef(), useRef(), useRef(), useRef(), useRef()];
   const [newUpdatedUser, setNewUpdatedUser] = useState();
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const usersData = useSelector((state) => state.UserSlice);
+  // const dispatch = useDispatch();
+  // const usersData = useSelector((state) => state.UserSlice);
   const t = useTheme();
 
   const style = {
@@ -83,7 +83,8 @@ function Admin() {
 
   useEffect(() => {
     (async () => {
-      dispatch(fetchUsersThunk());
+      // dispatch(fetchUsersThunk());
+      FetchUsers();
       FetchTicket();
     })();
   }, []);
@@ -151,16 +152,16 @@ function Admin() {
       });
   };
 
-  // const FetchUsers = () => {
-  //   fetchUserDetails()
-  //     .then((responce) => {
-  //       if (responce.status == 200) {
-  //         console.log(responce);
-  //         setUserDetails(responce.data);
-  //       }
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
+  const FetchUsers = () => {
+    fetchUserDetails()
+      .then((responce) => {
+        if (responce.status == 200) {
+          console.log(responce);
+          setUserDetails(responce.data);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   const editUsers = (dataSelectedOfUserRow) => {
     const users = {
@@ -175,14 +176,14 @@ function Admin() {
   };
 
   const editUsersInModal = () => {
-    userDetailsToBeInModal.userId = updateUserIdRef.current.value;
+    // userDetailsToBeInModal.userId = updateUserIdRef.current.value;
     userDetailsToBeInModal.name = updateNameRef.current.value;
     userDetailsToBeInModal.email = updateMailRef.current.value;
     userDetailsToBeInModal.userStatus = updateUserStatusRef.current.value;
     userDetailsToBeInModal.userTypes = updateUserTypesRef.current.value;
 
     const newUser = {
-      userId: updateUserIdRef.current.value,
+      // userId: updateUserIdRef.current.value,
       userName: updateNameRef.current.value,
       email: updateMailRef.current.value,
       userStatus: updateUserStatusRef.current.value,
@@ -192,21 +193,20 @@ function Admin() {
   };
 
   const updateUserChanges = () => {
-    // console.log(newUpdatedUser);
-    // setLoading(true);
-    // editUserDetails(userDetailsToBeInModal.userId, newUpdatedUser)
-    //   .then((responce) => {
-    //     console.log("update successfully", responce);
-    //     setOpenUserModal(false);
-    //     window.location.reload();
-    //     setLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     alert("error");
-    //     setLoading(false);
-    //   });
-    dispatch(updateUsersThunk(newUpdatedUser));
+    console.log(newUpdatedUser);
+    setLoading(true);
+    editUserDetails(userDetailsToBeInModal.userId, newUpdatedUser)
+      .then((responce) => {
+        console.log("update successfully", responce);
+        setOpenUserModal(false);
+        window.location.reload();
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("error");
+        setLoading(false);
+      });
   };
 
   return (
@@ -347,7 +347,7 @@ function Admin() {
                 field: "userTypes",
               },
             ]}
-            data={usersData.data}
+            data={userDetails}
             title="USER RECORDS"
           />
         </Box>
@@ -508,7 +508,7 @@ function Admin() {
               color="secondary"
               onClick={updateUserChanges}
             >
-              {usersData.loading ? <CircularProgress size={25} /> : "Submit"}
+              {loading ? <CircularProgress size={25} /> : "Submit"}
             </Button>
           </Box>
         </Modal>
