@@ -16,7 +16,6 @@
     "bcrypt": "^5.0.1",
     "install": "^0.13.0",
     "npm": "^8.12.1",
-    "nth-check": "^2.1.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-google-recaptcha": "^2.1.0",
@@ -29,9 +28,6 @@
     "redux": "^4.2.0",
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
-  },
-  "devDependencies": {
-    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -56,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "nth-check": "^2.1.1"
   }
 }
