@@ -27,7 +27,7 @@ function App() {
       background: {
         paper: !mode ? "#ede9dd" : "#121212",
         default: !mode ? "#77a6f2" : "#435e8a",
-        onother: !mode ? "#c7f0e0" : "#4c4d49",
+        onother: !mode ? "#dbd9d5" : "#4c4d49",
       },
       color: {
         another: !mode ? "#313cde" : "#03b1fc",

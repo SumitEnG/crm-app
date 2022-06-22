@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  formGroupClasses,
   InputLabel,
   MenuItem,
   Select,
@@ -10,12 +11,15 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import React from "react";
 import { useRef } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { userSigninAuth, userSignupAuth } from "../api/auth";
 import "../styles/LogIn.css";
+import { Box } from "@mui/system";
 
 function LogIn() {
   const [show, setShow] = useState(false);
@@ -34,6 +38,7 @@ function LogIn() {
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const [severity, setSeverity] = useState("error");
   const [loading, setLoading] = useState(false);
+  const [passType, setPassType] = useState(false);
   const navigate = useNavigate();
   const theme = useTheme();
   const toggleSignup = () => {
@@ -150,13 +155,27 @@ function LogIn() {
                 variant="standard"
                 inputRef={userIdLoginRef}
               />
-              <TextField
-                id="standard-basic"
-                label="password"
-                variant="standard"
-                type="password"
-                inputRef={userPassLoginRef}
-              />
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  position: "relative",
+                }}
+              >
+                <TextField
+                  id="standard-basic"
+                  label="password"
+                  variant="standard"
+                  type={passType ? "text" : "password"}
+                  inputRef={userPassLoginRef}
+                />
+                <Box
+                  className="showPass"
+                  onClick={() => setPassType(!passType)}
+                >
+                  {passType ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </Box>
+              </Box>
               <div
                 className="forgot-pass"
                 style={{ color: theme.palette.text.primary }}
@@ -236,13 +255,37 @@ function LogIn() {
                 variant="standard"
                 inputRef={userMailRef}
               />
-              <TextField
-                id="standard-basic"
-                label="password"
-                variant="standard"
-                type="password"
-                inputRef={userPassRef}
-              />
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flexEnd",
+                  position: "relative",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flexEnd",
+                    position: "relative",
+                  }}
+                >
+                  <TextField
+                    id="standard-basic"
+                    label="password"
+                    variant="standard"
+                    type={passType ? "text" : "password"}
+                    inputRef={userPassRef}
+                  />
+                  <Box
+                    className="showPass"
+                    onClick={() => setPassType(!passType)}
+                  >
+                    {passType ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                  </Box>
+                </Box>
+              </Box>
               <FormControl sx={{ m: 1, minWidth: 180 }}>
                 <InputLabel id="demo-simple-select-helper-label">
                   select user type

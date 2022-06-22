@@ -38,10 +38,10 @@ function Cards({ cardData }) {
       </Box>
       <Divider />
       <Box className="progress-container">
-        <Typography variant="h3">{cardData.number}</Typography>
+        <Typography variant="h3">{cardData.number.count}</Typography>
         <CircularProgress
           variant="determinate"
-          value={80}
+          value={cardData.value.percentage}
           sx={{ color: `${cardData.color}.main` }}
         />
       </Box>

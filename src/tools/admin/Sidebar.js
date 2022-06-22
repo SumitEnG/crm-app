@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router";
 
 const drawerWidth = 240;
 
@@ -66,6 +67,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Sidebar() {
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -73,6 +75,11 @@ export default function Sidebar() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
   return (
@@ -140,6 +147,7 @@ export default function Sidebar() {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
               }}
+              onClick={handleLogout}
             >
               <ListItemIcon
                 sx={{
