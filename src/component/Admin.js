@@ -165,8 +165,6 @@ function Admin() {
       FetchUsers();
       FetchTicket();
     })();
-    ticketCountCard();
-    calculatePercentage();
   }, []);
 
   const FetchTicket = () => {
@@ -175,6 +173,8 @@ function Admin() {
         if (responce.status == 200) {
           console.log(responce);
           setTicketDetails(responce.data);
+          ticketCountCard(responce?.data);
+          calculatePercentage(responce?.data);
         }
       })
       .catch((error) => {
@@ -289,7 +289,7 @@ function Admin() {
       });
   };
 
-  const ticketCountCard = () => {
+  const ticketCountCard = (tickets) => {
     const status = {
       open: 0,
       closed: 0,
@@ -297,7 +297,7 @@ function Admin() {
       progress: 0,
     };
 
-    ticketDetails.forEach((data) => {
+    tickets.forEach((data) => {
       if (data.status === "OPEN") {
         status.open += 1;
       } else if (data.status === "CLOSED") {
@@ -312,7 +312,27 @@ function Admin() {
     setTicketCount(status);
   };
   console.log(ticketCount);
-  const calculatePercentage = () => {
+
+  const calculatePercentage = (tickets) => {
+    const status = {
+      open: 0,
+      closed: 0,
+      blocked: 0,
+      progress: 0,
+    };
+
+    tickets.forEach((data) => {
+      if (data.status === "OPEN") {
+        status.open += 1;
+      } else if (data.status === "CLOSED") {
+        status.closed += 1;
+      } else if (data.status === "BLOCKED") {
+        status.blocked += 1;
+      } else {
+        status.progress += 1;
+      }
+    });
+
     const percentage = {
       OPEN: 0,
       CLOSED: 0,
@@ -320,18 +340,14 @@ function Admin() {
       PROGRESS: 0,
     };
 
-    percentage.OPEN =
-      (ticketCount.open * 100) / Object.keys(ticketDetails).length;
-    percentage.CLOSED =
-      (ticketCount.closed * 100) / Object.keys(ticketDetails).length;
-    percentage.BLOCKED =
-      (ticketCount.blocked * 100) / Object.keys(ticketDetails).length;
-    percentage.PROGRESS =
-      (ticketCount.progress * 100) / Object.keys(ticketDetails).length;
+    percentage.OPEN = (status.open * 100) / Object.keys(tickets).length;
+    percentage.CLOSED = (status.closed * 100) / Object.keys(tickets).length;
+    percentage.BLOCKED = (status.blocked * 100) / Object.keys(tickets).length;
+    percentage.PROGRESS = (status.progress * 100) / Object.keys(tickets).length;
 
     setTicketPercentage(percentage);
-    console.log(ticketPercentage);
   };
+  console.log(ticketPercentage);
 
   return (
     <Box sx={{ display: "flex" }}>
