@@ -165,6 +165,8 @@ function Admin() {
       FetchUsers();
       FetchTicket();
     })();
+    ticketCountCard();
+    calculatePercentage();
   }, []);
 
   const FetchTicket = () => {
@@ -173,9 +175,6 @@ function Admin() {
         if (responce.status == 200) {
           console.log(responce);
           setTicketDetails(responce.data);
-
-          ticketCountCard();
-          calculatePercentage();
         }
       })
       .catch((error) => {
@@ -312,7 +311,7 @@ function Admin() {
 
     setTicketCount(status);
   };
-
+  console.log(ticketCount);
   const calculatePercentage = () => {
     const percentage = {
       OPEN: 0,
